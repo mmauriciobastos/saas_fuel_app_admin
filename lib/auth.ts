@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
         try {
-          const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+          const res = await fetch(`${API_BASE_URL}/api/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -31,16 +31,21 @@ export const authOptions: NextAuthOptions = {
           if (!res.ok) return null
           const data = await res.json()
 
-          // Expecting shape: { token: string, user: { id, name, email, ... } }
-          if (!data?.token || !data?.user) return null
+          // Symfony returns: { token: string }
+          const token = data?.token || data?.access_token
+          if (!token) return null
+
+          // If no user payload is provided, infer minimal identity from credentials
+          const minimalUser = {
+            id: String(credentials.email),
+            name: credentials.email,
+            email: credentials.email,
+          }
 
           return {
-            id: String(data.user.id ?? data.user.email),
-            name: data.user.name ?? data.user.fullName ?? data.user.email,
-            email: data.user.email,
-            // attach raw fields for jwt callback
-            accessToken: data.token,
-            user: data.user,
+            ...minimalUser,
+            accessToken: token,
+            user: data.user ?? minimalUser,
           } as any
         } catch (e) {
           return null
