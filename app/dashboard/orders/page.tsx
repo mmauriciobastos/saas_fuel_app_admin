@@ -79,6 +79,7 @@ export default async function OrdersPage({
   const res = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
+      Accept: "application/ld+json, application/json;q=0.9, */*;q=0.8",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     cache: "no-store",
