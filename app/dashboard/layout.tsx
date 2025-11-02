@@ -15,7 +15,7 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 lg:grid-cols-[16rem_1fr]">
+      <div className="grid w-full grid-cols-1 lg:grid-cols-[16rem_1fr]">
         <aside className="hidden border-r lg:block">
           <div className="sticky top-0 flex h-screen flex-col gap-4 p-6">
             <div className="flex items-center gap-2">
