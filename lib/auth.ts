@@ -5,6 +5,10 @@ import CredentialsProvider from "next-auth/providers/credentials"
 const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8000"
 
 export const authOptions: NextAuthOptions = {
+  // Stabilize JWT encryption in dev to avoid JWE decryption errors when NEXTAUTH_SECRET is missing
+  secret:
+    process.env.NEXTAUTH_SECRET ||
+    (process.env.NODE_ENV !== "production" ? "dev-secret" : undefined),
   session: { strategy: "jwt" },
   pages: {
     signIn: "/login",
