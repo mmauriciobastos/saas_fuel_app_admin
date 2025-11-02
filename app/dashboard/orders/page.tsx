@@ -61,7 +61,7 @@ function getPageFromUrl(url?: string): number | undefined {
 export default async function OrdersPage({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const session = await getServerSession(authOptions)
   const token = (session as any)?.accessToken as string | undefined
@@ -69,7 +69,8 @@ export default async function OrdersPage({
     redirect("/login")
   }
 
-  const pageParam = searchParams?.page
+  const sp = await searchParams
+  const pageParam = sp?.page
   const page = Array.isArray(pageParam) ? Number(pageParam[0]) : Number(pageParam || 1)
 
   const qs = new URLSearchParams()
