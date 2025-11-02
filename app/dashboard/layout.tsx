@@ -29,7 +29,7 @@ export default function DashboardLayout({
               <SidebarLink href="/dashboard" label="Overview">
                 <Home className="size-4" />
               </SidebarLink>
-              <SidebarLink href="#" label="Orders">
+              <SidebarLink href="/dashboard/orders" label="Orders">
                 <ShoppingCart className="size-4" />
               </SidebarLink>
               <SidebarLink href="#" label="Clients">
