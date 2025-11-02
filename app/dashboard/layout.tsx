@@ -16,7 +16,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="grid w-full grid-cols-1 lg:grid-cols-[16rem_1fr]">
-        <aside className="hidden border-r lg:block">
+  <aside className="hidden border-r border-[hsl(var(--border))] lg:block">
           <div className="sticky top-0 flex h-screen flex-col gap-4 p-6">
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-100 ring-1 ring-inset ring-zinc-200 dark:bg-zinc-900 dark:ring-zinc-800">

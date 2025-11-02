@@ -110,8 +110,8 @@ export default async function OrdersPage({
         <p className="mt-1 text-sm text-muted-foreground">Total: {data.totalItems}</p>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-        <table className="min-w-full divide-y divide-zinc-100 dark:divide-zinc-800">
+      <div className="overflow-x-auto rounded-lg border border-[hsl(var(--border))]">
+        <table className="min-w-full divide-y divide-[hsl(var(--border))]">
           <thead className="bg-zinc-50 dark:bg-zinc-900">
             <tr>
               <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:px-6">Order</th>
@@ -122,7 +122,7 @@ export default async function OrdersPage({
               <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:px-6">Delivered</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100 bg-white dark:divide-zinc-800 dark:bg-black">
+          <tbody className="divide-y divide-[hsl(var(--border))] bg-white dark:bg-black">
             {items.map((o) => (
               <tr key={o["@id"] ?? o.id} className="hover:bg-zinc-50/40 dark:hover:bg-zinc-900/30">
                 <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-foreground sm:px-6">#{o.id}</td>
