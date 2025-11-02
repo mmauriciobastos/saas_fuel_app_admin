@@ -1,11 +1,38 @@
+"use client"
 import Image from "next/image"
 import Link from "next/link"
-
-export const metadata = {
-  title: "Sign in",
-}
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { signIn } from "next-auth/react"
+import { toast } from "sonner"
 
 export default function LoginPage() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setLoading(true)
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      })
+      if (res?.ok) {
+        toast.success("Signed in")
+        router.replace("/dashboard")
+      } else {
+        toast.error("Invalid email or password")
+      }
+    } catch (err) {
+      toast.error("Unable to sign in")
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -25,7 +52,7 @@ export default function LoginPage() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form action="#" method="POST" className="space-y-6">
+        <form onSubmit={onSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm/6 font-medium text-foreground">
               Email address
@@ -37,6 +64,8 @@ export default function LoginPage() {
                 type="email"
                 autoComplete="email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="block w-full rounded-md bg-background px-3 py-1.5 text-base text-foreground outline-none ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-2 focus:ring-primary/50 dark:ring-zinc-700 sm:text-sm/6"
                 placeholder="you@example.com"
               />
@@ -61,6 +90,8 @@ export default function LoginPage() {
                 type="password"
                 autoComplete="current-password"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="block w-full rounded-md bg-background px-3 py-1.5 text-base text-foreground outline-none ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-2 focus:ring-primary/50 dark:ring-zinc-700 sm:text-sm/6"
                 placeholder="••••••••"
               />
@@ -82,9 +113,10 @@ export default function LoginPage() {
           <div>
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-zinc-900 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-zinc-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              disabled={loading}
+              className="flex w-full justify-center rounded-md bg-zinc-900 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-zinc-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 disabled:opacity-70 disabled:cursor-not-allowed dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
             >
-              Sign in
+              {loading ? "Signing in…" : "Sign in"}
             </button>
           </div>
         </form>
