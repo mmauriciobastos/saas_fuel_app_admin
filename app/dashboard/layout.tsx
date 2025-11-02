@@ -7,6 +7,7 @@ import {
   BarChart3,
   Settings,
 } from "lucide-react"
+import { DashboardHeader } from "@/components/dashboard/header"
 
 export default function DashboardLayout({
   children,
@@ -55,6 +56,7 @@ export default function DashboardLayout({
         </aside>
 
         <main className="px-4 py-6 sm:px-6 lg:px-8">
+          <DashboardHeader />
           {children}
         </main>
       </div>
