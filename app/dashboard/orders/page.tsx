@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
@@ -110,9 +111,9 @@ export default async function OrdersPage({
         <p className="mt-1 text-sm text-muted-foreground">Total: {data.totalItems}</p>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-[hsl(var(--border))]">
+      <div className="overflow-x-auto rounded-lg border border-[hsl(var(--border))] bg-card">
         <table className="min-w-full divide-y divide-[hsl(var(--border))]">
-          <thead className="bg-zinc-50 dark:bg-zinc-900">
+          <thead className="bg-muted">
             <tr>
               <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:px-6">Order</th>
               <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:px-6">Address</th>
@@ -122,9 +123,9 @@ export default async function OrdersPage({
               <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:px-6">Delivered</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[hsl(var(--border))] bg-white dark:bg-black">
+          <tbody className="divide-y divide-[hsl(var(--border))] bg-background">
             {items.map((o) => (
-              <tr key={o["@id"] ?? o.id} className="hover:bg-zinc-50/40 dark:hover:bg-zinc-900/30">
+              <tr key={o["@id"] ?? o.id} className="hover:bg-muted/50">
                 <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-foreground sm:px-6">#{o.id}</td>
                 <td className="px-4 py-3 text-sm text-muted-foreground sm:px-6">{o.deliveryAddress}</td>
                 <td className="whitespace-nowrap px-4 py-3 text-sm sm:px-6">{o.fuelAmount}</td>
@@ -152,23 +153,19 @@ export default async function OrdersPage({
 
 function StatusBadge({ status }: { status: string }) {
   const s = status.toLowerCase()
-  const color =
+  const variant =
     s === "delivered"
-      ? "bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-950/30 dark:text-green-300 dark:ring-green-900"
+      ? "default"
       : s === "pending"
-      ? "bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-950/30 dark:text-amber-300 dark:ring-amber-900"
+      ? "secondary"
       : s === "cancelled" || s === "canceled"
-      ? "bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-950/30 dark:text-red-300 dark:ring-red-900"
-      : "bg-zinc-100 text-zinc-700 ring-zinc-600/20 dark:bg-zinc-900 dark:text-zinc-300 dark:ring-zinc-800"
-  return (
-    <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${color}`}>
-      {status}
-    </span>
-  )
+      ? "destructive"
+      : "outline"
+  return <Badge variant={variant as any}>{status}</Badge>
 }
 
 function PaginationButton({ href, disabled, children }: { href?: string; disabled?: boolean; children: React.ReactNode }) {
-  const base = "rounded-md border px-3 py-1.5 text-sm text-foreground/90 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+  const base = "rounded-md border px-3 py-1.5 text-sm text-foreground/90 hover:bg-muted"
   if (disabled || !href) {
     return (
       <button className={`${base} opacity-50`} disabled>
