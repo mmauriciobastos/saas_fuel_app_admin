@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge"
+import { BadgeCheck } from "lucide-react"
 import Link from "next/link"
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
@@ -153,15 +154,24 @@ export default async function OrdersPage({
 
 function StatusBadge({ status }: { status: string }) {
   const s = status.toLowerCase()
-  const variant =
-    s === "delivered"
-      ? "default"
-      : s === "pending"
-      ? "secondary"
-      : s === "cancelled" || s === "canceled"
-      ? "destructive"
-      : "outline"
-  return <Badge variant={variant as any}>{status}</Badge>
+  if (s === "delivered") {
+    return (
+      <Badge variant={"success" as any}>
+        <BadgeCheck className="mr-1 size-3.5" />
+        {status}
+      </Badge>
+    )
+  }
+  if (s === "pending") {
+    return <Badge variant={"warning" as any}>{status}</Badge>
+  }
+  if (s === "scheduled") {
+    return <Badge variant={"outline" as any}>{status}</Badge>
+  }
+  if (s === "cancelled" || s === "canceled") {
+    return <Badge variant={"destructive" as any}>{status}</Badge>
+  }
+  return <Badge variant={"outline" as any}>{status}</Badge>
 }
 
 function PaginationButton({ href, disabled, children }: { href?: string; disabled?: boolean; children: React.ReactNode }) {
