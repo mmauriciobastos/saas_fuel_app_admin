@@ -35,21 +35,37 @@ export const authOptions: NextAuthOptions = {
           if (!res.ok) return null
           const data = await res.json()
 
-          // Symfony returns: { token: string }
+          // Symfony now returns: { token: string, user: { id, email, firstName, lastName, company: { id, name } } }
           const token = data?.token || data?.access_token
           if (!token) return null
 
-          // If no user payload is provided, infer minimal identity from credentials
-          const minimalUser = {
-            id: String(credentials.email),
-            name: credentials.email,
-            email: credentials.email,
-          }
+          // Parse user and company from the API response
+          const apiUser = data.user
+          const user = apiUser
+            ? {
+                id: String(apiUser.id),
+                email: apiUser.email,
+                name: apiUser.firstName && apiUser.lastName
+                  ? `${apiUser.firstName} ${apiUser.lastName}`
+                  : apiUser.email,
+                firstName: apiUser.firstName,
+                lastName: apiUser.lastName,
+                company: apiUser.company
+                  ? {
+                      id: apiUser.company.id,
+                      name: apiUser.company.name,
+                    }
+                  : undefined,
+              }
+            : {
+                id: String(credentials.email),
+                name: credentials.email,
+                email: credentials.email,
+              }
 
           return {
-            ...minimalUser,
+            ...user,
             accessToken: token,
-            user: data.user ?? minimalUser,
           } as any
         } catch (e) {
           return null
@@ -60,15 +76,27 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }: any) {
       if (user) {
-        token.accessToken = (user as any).accessToken
-        token.user = (user as any).user ?? user
+        token.accessToken = user.accessToken
+        token.id = user.id
+        token.email = user.email
+        token.name = user.name
+        token.firstName = user.firstName
+        token.lastName = user.lastName
+        token.company = user.company
       }
       return token
     },
     async session({ session, token }: any) {
       if (token) {
-        ;(session as any).accessToken = (token as any).accessToken
-        session.user = (token as any).user ?? session.user
+        session.accessToken = token.accessToken
+        session.user = {
+          id: token.id,
+          email: token.email,
+          name: token.name,
+          firstName: token.firstName,
+          lastName: token.lastName,
+          company: token.company,
+        }
       }
       return session
     },
